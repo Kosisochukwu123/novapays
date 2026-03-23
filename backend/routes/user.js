@@ -18,6 +18,12 @@ import {
   clearAll,
 } from '../controllers/notificationController.js';
 
+import {
+  getUserChat,
+  userSendMessage,
+  userMarkRead,
+} from '../controllers/chatController.js';
+
 
 const router = express.Router();
 
@@ -42,6 +48,10 @@ router.put('/notifications/read-all',     markAllRead);
 router.put('/notifications/:id/read',     markRead);
 router.delete('/notifications',           clearAll);
 router.delete('/notifications/:id',       deleteNotification);
+
+router.get('/chat',         getUserChat);
+router.post('/chat/message', userSendMessage);
+router.put('/chat/read',     userMarkRead);
 
 
 

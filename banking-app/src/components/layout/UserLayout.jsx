@@ -22,6 +22,7 @@ import { useAppSettings } from "../../context/AppContext";
 import LanguageSwitcher from "../common/LanguageSwitcher";
 import PlatformLogo from "../common/PlatformLogo";
 import NotificationBell from '../common/NotificationBell';
+import ChatWidget from '../common/ChatWidget';
 
 
 const NAV_ITEMS = [
@@ -383,6 +384,9 @@ export default function UserLayout({ children }) {
           .mobile-topbar-logo { display: flex  !important; }
         }
       `}</style>
+
+      <ChatWidget/>
+      
     </div>
   );
 }

@@ -35,6 +35,14 @@ import {
 import { protect }   from '../middleware/auth.js';
 import { adminOnly } from '../middleware/adminOnly.js';
 
+import {
+  adminGetChats,
+  adminGetChat,
+  adminSendMessage,
+  adminMarkRead,
+  adminCloseChat,
+} from '../controllers/chatController.js';
+
 const router = express.Router();
 
 router.use(protect, adminOnly);
@@ -60,5 +68,11 @@ router.put('/wallets/:id',              adminUpdateWallet);
 router.get('/deposits',                 adminGetDeposits);
 router.put('/deposits/:id/confirm',     adminConfirmDeposit);
 router.put('/deposits/:id/reject',      adminRejectDeposit);
+
+router.get('/chats',              adminGetChats);
+router.get('/chats/:id',          adminGetChat);
+router.post('/chats/:id/message', adminSendMessage);
+router.put('/chats/:id/read',     adminMarkRead);
+router.put('/chats/:id/close',    adminCloseChat);
 
 export default router;
