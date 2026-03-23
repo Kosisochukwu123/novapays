@@ -1,6 +1,10 @@
 import Wallet from "../models/Wallet.js";
 import Deposit from "../models/Deposit.js";
 import User from "../models/User.js";
+// import { createNotification } from './notificationController.js';
+import Notification from '../models/Notification.js';
+import { createNotification } from './notificationController.js';
+
 
 // ── Default wallets seeded on first run ───────────────────────────────────
 const DEFAULT_WALLETS = [
@@ -206,35 +210,44 @@ export const adminGetDeposits = async (req, res) => {
 export const adminConfirmDeposit = async (req, res) => {
   try {
     const { amount, adminNote } = req.body;
-    const deposit = await Deposit.findById(req.params.id).populate("user");
-    if (!deposit) return res.status(404).json({ message: "Deposit not found" });
-    if (deposit.status === "confirmed") {
-      return res.status(400).json({ message: "Deposit already confirmed" });
+    const deposit = await Deposit.findById(req.params.id).populate('user');
+    if (!deposit) return res.status(404).json({ message: 'Deposit not found' });
+    if (deposit.status === 'confirmed') {
+      return res.status(400).json({ message: 'Deposit already confirmed' });
     }
+
     const parsedAmount = parseFloat(amount) || deposit.amount;
+
     // Credit user balance
     await User.findByIdAndUpdate(deposit.user._id, {
       $inc: { balance: parsedAmount },
     });
-    // Update deposit
+
+    // Update deposit record
     const updated = await Deposit.findByIdAndUpdate(
       req.params.id,
       {
-        status: "confirmed",
-        amount: parsedAmount,
-        adminNote: adminNote || "",
+        status:      'confirmed',
+        amount:      parsedAmount,
+        adminNote:   adminNote || '',
         confirmedAt: new Date(),
         confirmedBy: req.user._id,
       },
-      { new: true },
-    ).populate("user", "fullName email");
-    res.json({
-      message: "Deposit confirmed and balance credited",
-      deposit: updated,
+      { new: true }
+    ).populate('user', 'fullName email');
+
+    // Notify the user
+    await createNotification(deposit.user._id, {
+      title:   'Deposit Confirmed ✓',
+      message: `Your ${deposit.symbol} deposit of $${parsedAmount.toFixed(2)} has been confirmed and credited to your account.`,
+      type:    'deposit',
+      link:    '/deposit',
     });
+
+    res.json({ message: 'Deposit confirmed and balance credited', deposit: updated });
   } catch (err) {
-    console.error("adminConfirmDeposit error:", err);
-    res.status(500).json({ message: "Failed to confirm deposit" });
+    console.error('adminConfirmDeposit error:', err);
+    res.status(500).json({ message: 'Failed to confirm deposit' });
   }
 };
 
@@ -243,23 +256,31 @@ export const adminRejectDeposit = async (req, res) => {
   try {
     const { adminNote } = req.body;
     const deposit = await Deposit.findById(req.params.id);
-    if (!deposit) return res.status(404).json({ message: "Deposit not found" });
-    if (deposit.status !== "pending") {
-      return res
-        .status(400)
-        .json({ message: "Only pending deposits can be rejected" });
+    if (!deposit) return res.status(404).json({ message: 'Deposit not found' });
+    if (deposit.status !== 'pending') {
+      return res.status(400).json({ message: 'Only pending deposits can be rejected' });
     }
+
     const updated = await Deposit.findByIdAndUpdate(
       req.params.id,
       {
-        status: "rejected",
-        adminNote: adminNote || "",
+        status:      'rejected',
+        adminNote:   adminNote || '',
         confirmedBy: req.user._id,
       },
-      { new: true },
-    ).populate("user", "fullName email");
-    res.json({ message: "Deposit rejected", deposit: updated });
+      { new: true }
+    ).populate('user', 'fullName email');
+
+    // Notify the user
+    await createNotification(deposit.user, {
+      title:   'Deposit Rejected',
+      message: `Your ${deposit.symbol} deposit request was not approved.${adminNote ? ' Note: ' + adminNote : ''}`,
+      type:    'deposit',
+      link:    '/deposit',
+    });
+
+    res.json({ message: 'Deposit rejected', deposit: updated });
   } catch (err) {
-    res.status(500).json({ message: "Failed to reject deposit" });
+    res.status(500).json({ message: 'Failed to reject deposit' });
   }
 };

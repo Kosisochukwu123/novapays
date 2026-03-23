@@ -73,6 +73,8 @@ export default function LoansPage() {
   const [calcRate,    setCalcRate]    = useState('8.9');
   const [calcMonths,  setCalcMonths]  = useState('24');
 
+  const isMobile = window.innerWidth < 590
+
   const monthly = calcMonthly(
     parseFloat(calcAmount) || 0,
     parseFloat(calcRate)   || 0,
@@ -136,7 +138,7 @@ export default function LoansPage() {
         <p style={{ color: '#64748b', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 14 }}>
           Loan Products
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 28 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? "1fr" : '1fr 1fr', gap: 16, marginBottom: 28 }}>
           {LOAN_PRODUCTS.map(loan => (
             <div key={loan.id} style={{ ...card, padding: 24, position: 'relative', overflow: 'hidden' }}>
               {/* Badge */}
@@ -224,7 +226,7 @@ export default function LoansPage() {
             ))}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? "1fr 1fr" : 'repeat(3,1fr)', gap: 12 }}>
             {[
               { label: 'Monthly Payment',  value: `$${isNaN(monthly)     ? '0.00' : monthly.toFixed(2)}`,       color: '#38bdf8' },
               { label: 'Total Repayment',  value: `$${isNaN(totalRepay)  ? '0.00' : totalRepay.toFixed(2)}`,    color: '#f1f5f9' },
@@ -242,7 +244,7 @@ export default function LoansPage() {
         <p style={{ color: '#64748b', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 14 }}>
           How It Works
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 28 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? "1fr 1fr" : 'repeat(4,1fr)', gap: 12, marginBottom: 28 }}>
           {HOW_IT_WORKS.map((step, i) => (
             <div key={i} style={{ ...card, padding: '20px 16px', textAlign: 'center' }}>
               <div style={{ fontSize: 24, fontWeight: 800, color: step.color, opacity: 0.4, marginBottom: 10, fontFamily: "'Playfair Display', serif" }}>

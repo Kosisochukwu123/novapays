@@ -10,6 +10,13 @@ import { notifyDeposit, getUserDeposits, getWallets } from '../controllers/walle
 
 import { protect } from '../middleware/auth.js';
 import { getSettings } from '../controllers/adminController.js';
+import {
+  getNotifications,
+  markRead,
+  markAllRead,
+  deleteNotification,
+  clearAll,
+} from '../controllers/notificationController.js';
 
 
 const router = express.Router();
@@ -29,6 +36,12 @@ router.get('/trades',  getMyTrades);
 router.get('/deposit/wallets',  getWallets);
 router.post('/deposit/notify',  notifyDeposit);
 router.get('/deposits',         getUserDeposits);
+
+router.get('/notifications',              getNotifications);
+router.put('/notifications/read-all',     markAllRead);
+router.put('/notifications/:id/read',     markRead);
+router.delete('/notifications',           clearAll);
+router.delete('/notifications/:id',       deleteNotification);
 
 
 

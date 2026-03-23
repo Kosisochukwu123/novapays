@@ -4,6 +4,7 @@ import { useAppSettings } from "../../context/AppContext";
 
 export default function AuthLayout({ children }) {
   const { settings } = useAppSettings();
+  // const isMobile = window.innerWidth < 590;
 
   return (
     <div

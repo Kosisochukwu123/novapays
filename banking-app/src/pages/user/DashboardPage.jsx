@@ -493,7 +493,6 @@ export default function DashboardPage() {
     );
   }
 
-
   // ── Main dashboard ─────────────────────────────────────────────────────
   return (
     <UserLayout>
@@ -571,14 +570,13 @@ export default function DashboardPage() {
           >
             <Send size={15} /> {t("dashboard.sendMoney")}
           </button>
-
         </div>
 
         {/* Stat Cards */}
         <div
           style={{
             display: "grid",
-            
+
             gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
             gap: 16,
             marginBottom: 20,
@@ -631,10 +629,9 @@ export default function DashboardPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "3fr 2fr",
+            gridTemplateColumns: isMobile ? "1fr" : "3fr 2fr",
             gap: 16,
             marginBottom: 16,
-            // border: "10px solid rgba(255,255,255,0.06)",
           }}
         >
           {/* Balance Area Chart */}
@@ -642,32 +639,38 @@ export default function DashboardPage() {
             <p style={{ fontWeight: 600, color: "#fff", marginBottom: 16 }}>
               {t("dashboard.balanceOverview")}
             </p>
+
             {balanceHistory.length > 0 ? (
-              <ResponsiveContainer width="100%" height={200} >
+              <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
                 <AreaChart data={balanceHistory}>
-                  <defs >
+                  <defs>
                     <linearGradient id="balGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#38bdf8" stopOpacity={0} />
                     </linearGradient>
                   </defs>
+
                   <CartesianGrid
                     strokeDasharray="3 3"
                     stroke="rgba(255,255,255,0.05)"
                   />
+
                   <XAxis
                     dataKey="month"
-                    tick={{ fill: "#64748b", fontSize: 12 }}
+                    tick={{ fill: "#64748b", fontSize: isMobile ? 10 : 12 }}
                     axisLine={false}
                     tickLine={false}
                   />
+
                   <YAxis
-                    tick={{ fill: "#64748b", fontSize: 12 }}
+                    tick={{ fill: "#64748b", fontSize: isMobile ? 10 : 12 }}
                     axisLine={false}
                     tickLine={false}
                     tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
                   />
+
                   <Tooltip content={<CustomTooltip />} />
+
                   <Area
                     type="monotone"
                     dataKey="balance"
@@ -681,15 +684,16 @@ export default function DashboardPage() {
             ) : (
               <div
                 style={{
-                  height: 200,
+                  height: isMobile ? 180 : 200,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   color: "#334155",
                   fontSize: 13,
+                  textAlign: "center",
+                  padding: isMobile ? "0 10px" : 0,
                 }}
               >
-                {/* No balance history yet */}
                 {t("dashboard.noBalanceHistory")}
               </div>
             )}
@@ -700,7 +704,15 @@ export default function DashboardPage() {
             <p style={{ fontWeight: 600, color: "#fff", marginBottom: 6 }}>
               {t("dashboard.incomeVsExpenses")}
             </p>
-            <div style={{ display: "flex", gap: 16, marginBottom: 12 }}>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 16,
+                marginBottom: 12,
+                flexWrap: isMobile ? "wrap" : "nowrap",
+              }}
+            >
               <span
                 style={{
                   display: "flex",
@@ -716,11 +728,11 @@ export default function DashboardPage() {
                     height: 8,
                     borderRadius: 2,
                     backgroundColor: "#22c55e",
-                    display: "inline-block",
                   }}
                 />
                 Income
               </span>
+
               <span
                 style={{
                   display: "flex",
@@ -736,38 +748,47 @@ export default function DashboardPage() {
                     height: 8,
                     borderRadius: 2,
                     backgroundColor: "#38bdf8",
-                    display: "inline-block",
                   }}
                 />
                 Expenses
               </span>
             </div>
+
             {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={185}>
-                <BarChart data={chartData} barSize={8} barGap={4}>
+              <ResponsiveContainer width="100%" height={isMobile ? 170 : 185}>
+                <BarChart
+                  data={chartData}
+                  barSize={isMobile ? 6 : 8}
+                  barGap={4}
+                >
                   <CartesianGrid
                     strokeDasharray="3 3"
                     stroke="rgba(255,255,255,0.05)"
                   />
+
                   <XAxis
                     dataKey="month"
-                    tick={{ fill: "#64748b", fontSize: 11 }}
+                    tick={{ fill: "#64748b", fontSize: isMobile ? 10 : 11 }}
                     axisLine={false}
                     tickLine={false}
                   />
+
                   <YAxis
-                    tick={{ fill: "#64748b", fontSize: 11 }}
+                    tick={{ fill: "#64748b", fontSize: isMobile ? 10 : 11 }}
                     axisLine={false}
                     tickLine={false}
                     tickFormatter={(v) => `$${v / 1000}k`}
                   />
+
                   <Tooltip content={<CustomTooltip />} />
+
                   <Bar
                     dataKey="income"
                     fill="#22c55e"
                     radius={[3, 3, 0, 0]}
                     name="Income"
                   />
+
                   <Bar
                     dataKey="expenses"
                     fill="#38bdf8"
@@ -779,12 +800,14 @@ export default function DashboardPage() {
             ) : (
               <div
                 style={{
-                  height: 185,
+                  height: isMobile ? 170 : 185,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   color: "#334155",
                   fontSize: 13,
+                  textAlign: "center",
+                  padding: isMobile ? "0 10px" : 0,
                 }}
               >
                 {t("dashboard.noTransactions")}

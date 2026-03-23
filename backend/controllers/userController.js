@@ -1,5 +1,6 @@
-import User from '../models/User.js';
-import Transaction from '../models/Transaction.js';
+import User from "../models/User.js";
+import Transaction from "../models/Transaction.js";
+import { createNotification } from "./notificationController.js";
 
 // GET /api/user/dashboard
 export const getDashboard = async (req, res) => {
@@ -11,28 +12,36 @@ export const getDashboard = async (req, res) => {
     })
       .sort({ createdAt: -1 })
       .limit(50)
-      .populate('fromUser toUser', 'fullName email');
+      .populate("fromUser toUser", "fullName email");
 
     const income = transactions
-      .filter(t => t.toUser?._id?.toString() === userId.toString() && t.status === 'completed')
+      .filter(
+        (t) =>
+          t.toUser?._id?.toString() === userId.toString() &&
+          t.status === "completed",
+      )
       .reduce((s, t) => s + t.amount, 0);
 
     const expenses = transactions
-      .filter(t => t.fromUser?._id?.toString() === userId.toString() && t.status === 'completed')
+      .filter(
+        (t) =>
+          t.fromUser?._id?.toString() === userId.toString() &&
+          t.status === "completed",
+      )
       .reduce((s, t) => s + t.amount, 0);
 
     res.json({
-      balance:   req.user.balance,
+      balance: req.user.balance,
       income,
       expenses,
-      balanceChange:  3.2,  // Compute from historical data as needed
-      incomeChange:   12.0,
+      balanceChange: 3.2, // Compute from historical data as needed
+      incomeChange: 12.0,
       expensesChange: -5.1,
       recentTransactions: transactions.slice(0, 5),
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to fetch dashboard' });
+    res.status(500).json({ message: "Failed to fetch dashboard" });
   }
 };
 
@@ -43,7 +52,7 @@ export const getTransactions = async (req, res) => {
     const userId = req.user._id;
 
     const query = { $or: [{ fromUser: userId }, { toUser: userId }] };
-    if (type)   query.type   = type;
+    if (type) query.type = type;
     if (status) query.status = status;
 
     const total = await Transaction.countDocuments(query);
@@ -51,11 +60,16 @@ export const getTransactions = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
-      .populate('fromUser toUser', 'fullName email');
+      .populate("fromUser toUser", "fullName email");
 
-    res.json({ transactions, total, page: parseInt(page), pages: Math.ceil(total / limit) });
+    res.json({
+      transactions,
+      total,
+      page: parseInt(page),
+      pages: Math.ceil(total / limit),
+    });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch transactions' });
+    res.status(500).json({ message: "Failed to fetch transactions" });
   }
 };
 
@@ -66,38 +80,58 @@ export const transfer = async (req, res) => {
     const senderId = req.user._id;
 
     if (!recipientEmail || !amount || amount <= 0) {
-      return res.status(400).json({ message: 'Recipient email and a valid amount are required' });
+      return res
+        .status(400)
+        .json({ message: "Recipient email and a valid amount are required" });
     }
 
     if (recipientEmail === req.user.email) {
-      return res.status(400).json({ message: 'You cannot transfer to yourself' });
+      return res
+        .status(400)
+        .json({ message: "You cannot transfer to yourself" });
     }
 
     const sender = await User.findById(senderId);
     const recipient = await User.findOne({ email: recipientEmail });
 
-    if (!recipient) return res.status(404).json({ message: 'Recipient not found' });
-    if (recipient.status !== 'active') return res.status(400).json({ message: 'Recipient account is inactive' });
-    if (sender.balance < amount) return res.status(400).json({ message: 'Insufficient balance' });
+    if (!recipient)
+      return res.status(404).json({ message: "Recipient not found" });
+    if (recipient.status !== "active")
+      return res.status(400).json({ message: "Recipient account is inactive" });
+    if (sender.balance < amount)
+      return res.status(400).json({ message: "Insufficient balance" });
 
     // Atomic balance update
-    await User.findByIdAndUpdate(senderId,     { $inc: { balance: -amount } });
-    await User.findByIdAndUpdate(recipient._id, { $inc: { balance:  amount } });
+    await User.findByIdAndUpdate(senderId, { $inc: { balance: -amount } });
+    await User.findByIdAndUpdate(recipient._id, { $inc: { balance: amount } });
 
     const transaction = await Transaction.create({
-      fromUser:    senderId,
-      toUser:      recipient._id,
+      fromUser: senderId,
+      toUser: recipient._id,
       amount,
-      type:        'transfer',
-      status:      'completed',
+      type: "transfer",
+      status: "completed",
       description: `Transfer to ${recipient.fullName}`,
-      note:        note || '',
+      note: note || "",
     });
 
-    res.status(201).json({ message: 'Transfer successful', transaction });
+    await createNotification(req.user._id, {
+      title: "Transfer Sent",
+      message: `You sent $${amount} to ${recipient.fullName}`,
+      type: "transfer",
+      link: "/history",
+    });
+    await createNotification(recipient._id, {
+      title: "Money Received",
+      message: `You received $${amount} from ${req.user.fullName}`,
+      type: "transfer",
+      link: "/history",
+    });
+
+    res.status(201).json({ message: "Transfer successful", transaction });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Transfer failed' });
+    res.status(500).json({ message: "Transfer failed" });
   }
 };
 
@@ -113,11 +147,11 @@ export const updateProfile = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { fullName, phone, language },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     res.json({ user });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to update profile' });
+    res.status(500).json({ message: "Failed to update profile" });
   }
 };
 
@@ -128,16 +162,19 @@ export const changePassword = async (req, res) => {
     const user = await User.findById(req.user._id);
 
     const match = await user.matchPassword(currentPassword);
-    if (!match) return res.status(400).json({ message: 'Current password is incorrect' });
+    if (!match)
+      return res.status(400).json({ message: "Current password is incorrect" });
 
     if (newPassword.length < 8) {
-      return res.status(400).json({ message: 'New password must be at least 8 characters' });
+      return res
+        .status(400)
+        .json({ message: "New password must be at least 8 characters" });
     }
 
     user.password = newPassword;
     await user.save();
-    res.json({ message: 'Password changed successfully' });
+    res.json({ message: "Password changed successfully" });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to change password' });
+    res.status(500).json({ message: "Failed to change password" });
   }
 };

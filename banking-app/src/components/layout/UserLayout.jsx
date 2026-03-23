@@ -21,6 +21,8 @@ import { useAuth } from "../../context/AuthContext";
 import { useAppSettings } from "../../context/AppContext";
 import LanguageSwitcher from "../common/LanguageSwitcher";
 import PlatformLogo from "../common/PlatformLogo";
+import NotificationBell from '../common/NotificationBell';
+
 
 const NAV_ITEMS = [
   { to: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
@@ -186,9 +188,10 @@ export default function UserLayout({ children }) {
           gap: 6,
         }}
       >
-        <div style={{ padding: "4px 8px" }}>
-          <LanguageSwitcher />
+        <div style={{ padding: "4px 8px", }}>
+          <LanguageSwitcher  style={{left: 5 }}/>
         </div>
+
         <button
           onClick={handleLogout}
           style={{
@@ -219,6 +222,7 @@ export default function UserLayout({ children }) {
           <LogOut size={17} />
           {t("nav.logout")}
         </button>
+
       </div>
     </div>
   );
@@ -265,6 +269,7 @@ export default function UserLayout({ children }) {
           >
             <SidebarContent />
           </div>
+
           <button
             onClick={() => setSidebarOpen(false)}
             style={{
@@ -333,30 +338,9 @@ export default function UserLayout({ children }) {
 
           {/* Right side */}
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <button
-              style={{
-                position: "relative",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                color: "#94a3b8",
-                display: "flex",
-              }}
-            >
-              <Bell size={20} />
-              <span
-                style={{
-                  position: "absolute",
-                  top: -2,
-                  right: -2,
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  backgroundColor: "#ef4444",
-                  border: "1.5px solid #0f172a",
-                }}
-              />
-            </button>
+
+            <NotificationBell />
+
             <div
               style={{
                 width: 34,
@@ -373,7 +357,9 @@ export default function UserLayout({ children }) {
             >
               {initials}
             </div>
+
           </div>
+
         </header>
 
         {/* Page content */}

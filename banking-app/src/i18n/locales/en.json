@@ -27,8 +27,8 @@
     "rememberMe": "Remember me",
     "signingIn": "Signing in...",
     "creatingAccount": "Creating account...",
-    "joinText": "Join NovaPay in seconds",
-    "continueText": "Sign in to continue to NovaPay"
+    "joinText": "Join in seconds",
+    "continueText": "Sign in to continue"
   },
   "dashboard": {
     "greeting_morning": "Good morning",

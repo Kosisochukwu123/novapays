@@ -92,6 +92,9 @@ export default function InvestmentPage() {
   const [openFaq,        setOpenFaq]        = useState(null);
   const [selectedRisk,   setSelectedRisk]   = useState(null);
 
+  const isMobile = window.innerWidth < 590
+
+
   return (
     <UserLayout>
       {showOverlay && <IneligibleOverlay type="investment" />}
@@ -142,7 +145,7 @@ export default function InvestmentPage() {
         </div>
 
         {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 28 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 12, marginBottom: 28 }}>
           {STATS.map(s => (
             <div key={s.label} style={{ ...card, padding: '18px 16px', textAlign: 'center' }}>
               <s.icon size={18} color="#c084fc" style={{ marginBottom: 10 }} />
@@ -156,7 +159,7 @@ export default function InvestmentPage() {
         <p style={{ color: '#64748b', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 14 }}>
           Investment Products
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, marginBottom: 28 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(1,1fr)' : 'repeat(3,1fr)', gap: 16, marginBottom: 28 }}>
           {INVESTMENT_PRODUCTS.map(product => (
             <div key={product.id} style={{ ...card, padding: 22, position: 'relative', display: 'flex', flexDirection: 'column' }}>
               {/* Badge */}
@@ -229,7 +232,7 @@ export default function InvestmentPage() {
           <p style={{ color: '#64748b', fontSize: 13, marginBottom: 20 }}>
             Choose the investment style that matches your goals
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? "repeat(1, 1fr)" : 'repeat(3,1fr)', gap: 12 }}>
             {RISK_PROFILES.map((profile, i) => (
               <button
                 key={i}
