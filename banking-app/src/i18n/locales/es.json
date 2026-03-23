@@ -1,0 +1,68 @@
+{
+  "nav": {
+    "dashboard": "Panel",
+    "transfer": "Transferencia",
+    "history": "Historial",
+    "profile": "Perfil",
+    "logout": "Cerrar sesión",
+    "deposit": "Depósito"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "phone": "Teléfono",
+    "noAccount": "¿No tienes cuenta?",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "signIn": "Entrar",
+    "signUp": "Crear cuenta",
+    "welcomeBack": "Bienvenido de nuevo",
+    "createAccount": "Crea tu cuenta"
+  },
+  "dashboard": {
+    "balance": "Saldo total",
+    "income": "Ingresos",
+    "expenses": "Gastos",
+    "recentTransactions": "Transacciones recientes",
+    "quickTransfer": "Transferencia rápida",
+    "greeting": "Buenos días"
+  },
+  "transfer": {
+    "title": "Transferir dinero",
+    "recipient": "Destinatario",
+    "amount": "Cantidad",
+    "note": "Nota (opcional)",
+    "send": "Enviar dinero",
+    "success": "Transferencia exitosa"
+  },
+  "common": {
+    "language": "Idioma",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "success": "Éxito",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "date": "Fecha",
+    "status": "Estado",
+    "amount": "Cantidad",
+    "actions": "Acciones"
+  },
+  "admin": {
+    "dashboard": "Panel Admin",
+    "users": "Gestión de usuarios",
+    "transactions": "Transacciones",
+    "fund": "Financiar cuenta",
+    "settings": "Configuración",
+    "totalUsers": "Total usuarios",
+    "totalDeposits": "Total depósitos",
+    "activeAccounts": "Cuentas activas",
+    "flagged": "Actividad marcada"
+  }
+}
