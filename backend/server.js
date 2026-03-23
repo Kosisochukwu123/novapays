@@ -42,7 +42,7 @@ app.use(cors({
 }));
 
 // Handle all preflight OPTIONS requests
-app.options('*', cors());
+app.options('/{*path}', cors());
 
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(morgan('dev'));
