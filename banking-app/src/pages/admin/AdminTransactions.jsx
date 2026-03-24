@@ -62,6 +62,8 @@ export default function AdminTransactions() {
   const [saveError,     setSaveError]     = useState('');
   const [lastUpdated,   setLastUpdated]   = useState(null);
 
+  const isMobile = window.innerWidth < 590;
+
   // ── Fetch ─────────────────────────────────────────────────────────────
   const fetchTransactions = useCallback(async (showLoader = true) => {
     if (showLoader) setLoading(true);
@@ -208,7 +210,7 @@ export default function AdminTransactions() {
         </div>
 
         {/* Summary cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 22 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile? 'repeat(3,1fr)' : 'repeat(4,1fr)', gap: 12, marginBottom: 22 }}>
           {[
             { label: 'Total Volume',  value: `$${totalVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`, color: '#f1f5f9' },
             { label: 'Completed',     value: counts.completed, color: '#4ade80' },
