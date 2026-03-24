@@ -12,7 +12,7 @@ const card = {
   backgroundColor: '#1e293b',
   borderRadius: 16,
   border: '1px solid rgba(255,255,255,0.06)',
-  overflow: 'hidden',
+  overflow: 'scroll',
 };
 
 const OUTCOME_CFG = {
@@ -62,6 +62,8 @@ export default function AdminTrades() {
   const [resolveError, setResolveError] = useState('');
   const [saveLoading,  setSaveLoading]  = useState(false);
   const [lastUpdated,  setLastUpdated]  = useState(null);
+
+  const isMobile = window.innerWidth < 590;
 
   // ── Fetch all trades ──────────────────────────────────────────────────
   const fetchTrades = useCallback(async (showLoader = true) => {
@@ -203,7 +205,7 @@ export default function AdminTrades() {
         </div>
 
         {/* Summary cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 12, marginBottom: 22 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 22 }}>
           {[
             { label: 'Total Trades',    value: counts.all,                          color: '#f1f5f9' },
             { label: 'Pending',         value: counts.pending,                      color: '#fbbf24' },
@@ -372,6 +374,7 @@ export default function AdminTrades() {
                       </button>
                     )}
                   </div>
+
                 </div>
               );
             })
@@ -548,7 +551,7 @@ export default function AdminTrades() {
             {/* Admin note */}
             <div style={{ marginBottom: 22 }}>
               <label style={{ fontSize: 13, fontWeight: 500, color: '#cbd5e1', display: 'block', marginBottom: 4 }}>
-                Admin Note <span style={{ color: '#334155' }}>(optional)</span>
+                  <span style={{ color: '#334155' }}>(optional)</span>
               </label>
               <textarea
                 value={resolveForm.adminNote}

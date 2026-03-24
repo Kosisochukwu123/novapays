@@ -31,6 +31,8 @@ export default function AdminDeposits() {
   const [copiedId,       setCopiedId]       = useState(null);
   const [lastUpdated,    setLastUpdated]    = useState(null);
 
+  const isMobile = window.innerWidth < 590;
+
   const fetchAll = useCallback(async (showLoader = true) => {
     if (showLoader) setLoading(true);
     try {
@@ -186,7 +188,7 @@ export default function AdminDeposits() {
 
         {/* ══ WALLETS TAB ══════════════════════════════════════════════════ */}
         {tab === 'wallets' && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 14 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(1,1fr)' : 'repeat(2,1fr)', gap: 14 }}>
             {wallets.map(wallet => (
               <div key={wallet._id} style={{ ...card, padding: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
@@ -341,6 +343,7 @@ export default function AdminDeposits() {
       {editingWallet && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)' }}>
           <div style={modalCard}>
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 22 }}>
               <div>
                 <h3 style={{ color: '#fff', fontWeight: 700, fontSize: 18, fontFamily: "'Playfair Display', serif" }}>
@@ -441,6 +444,7 @@ export default function AdminDeposits() {
                 {walletSaving ? 'Saving...' : 'Save Wallet Address'}
               </button>
             </div>
+
           </div>
         </div>
       )}
@@ -449,6 +453,7 @@ export default function AdminDeposits() {
       {reviewDeposit && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)' }}>
           <div style={{ ...modalCard, maxWidth: 480 }}>
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 22 }}>
               <div>
                 <h3 style={{ color: '#fff', fontWeight: 700, fontSize: 18, fontFamily: "'Playfair Display', serif" }}>Review Deposit</h3>
@@ -507,7 +512,7 @@ export default function AdminDeposits() {
 
             <div style={{ marginBottom: 20 }}>
               <label style={{ fontSize: 13, color: '#cbd5e1', display: 'block', marginBottom: 6 }}>
-                Admin Note <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span>
+                <span style={{ color: '#334155', fontWeight: 400 }}>(optional)</span>
               </label>
               <textarea
                 value={reviewForm.adminNote}
