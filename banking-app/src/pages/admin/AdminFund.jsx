@@ -45,6 +45,8 @@ export default function AdminFund() {
   const [fundError,    setFundError]    = useState('');
   const [recentFunds,  setRecentFunds]  = useState([]);
 
+  const isMobile = window.innerWidth < 590;
+
   // ── Fetch users ───────────────────────────────────────────────────────
   const fetchUsers = useCallback(async () => {
     setUsersLoading(true);
@@ -205,7 +207,7 @@ export default function AdminFund() {
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 20 }}>
 
           {/* ── Left: User selector ─────────────────────────────────── */}
           <div style={card}>
@@ -509,6 +511,7 @@ export default function AdminFund() {
           </div>
         )}
       </div>
+
     </AdminLayout>
   );
 }
