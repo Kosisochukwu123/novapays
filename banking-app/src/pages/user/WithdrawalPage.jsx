@@ -300,7 +300,7 @@ export default function WithdrawalPage() {
   // ════════════════════════════════════════════════════════════════════════
   // STEP 2 — "You're not verified" popup overlay
   // ════════════════════════════════════════════════════════════════════════
-  if (step === STEP.UNVERIFIED) {
+ if (step === STEP.UNVERIFIED) { 
     return (
       <UserLayout>
         <div style={{ maxWidth: 500, margin: '0 auto', fontFamily: "'DM Sans', sans-serif" }}>
@@ -351,7 +351,8 @@ export default function WithdrawalPage() {
               </div>
 
               <h2 style={{ color: '#fff', fontSize: 22, fontWeight: 700, marginBottom: 10 }}>
-               {t('withdrawal.accountHolder')}
+               {/* {t('withdrawal.accountHolder')} */}
+                {t('withdrawal.notVerifiedTitle')}
               </h2>
 
               <p style={{ color: '#94a3b8', fontSize: 14, lineHeight: 1.7, marginBottom: 8 }}>
@@ -371,7 +372,7 @@ export default function WithdrawalPage() {
                 {[
                   { num: '1', text: 'Provide reason for withdrawal',   color: '#38bdf8' },
                   { num: '2', text: 'Upload supporting documents',      color: '#38bdf8' },
-                  { num: '3', text: 'Admin reviews within 24–48 hours', color: '#fbbf24' },
+                  { num: '3', text: 'Account review within 24–48 hours', color: '#fbbf24' },
                 ].map(s => (
                   <div key={s.num} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 10 }}>
                     <div style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: 'rgba(56,189,248,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>

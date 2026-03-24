@@ -1,24 +1,36 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
-    fullName:  { type: String, required: true, trim: true },
-    email:     { type: String, required: true, unique: true, lowercase: true, trim: true },
-    phone:     { type: String, required: true, trim: true },
-    password:  { type: String, required: true, minlength: 8 },
-    role:      { type: String, enum: ['user', 'admin'], default: 'user' },
-    status:    { type: String, enum: ['active', 'suspended', 'pending'], default: 'pending' },
-    balance:   { type: Number, default: 0, min: 0 },
-    language:  { type: String, default: 'en' },
+    fullName: { type: String, required: true, trim: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    phone: { type: String, required: true, trim: true },
+    password: { type: String, required: true, minlength: 8 },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
+    status: {
+      type: String,
+      enum: ["active", "suspended", "pending"],
+      default: "pending",
+    },
+    balance: { type: Number, default: 0, min: 0 },
+    language: { type: String, default: "en" },
     lastLogin: { type: Date },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Hash password before save
-userSchema.pre('save', async function () {
-  if (!this.isModified('password')) return;
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 12);
 });
 
@@ -34,5 +46,5 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;

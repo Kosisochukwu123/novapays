@@ -293,7 +293,7 @@ const DEFAULT_SETTINGS = {
   supportEmail:       'support@novapay.com',
 };
 
-const loadSettings = () => {
+export const loadSettings = () => {
   try {
     if (fs.existsSync(SETTINGS_PATH)) {
       const raw = fs.readFileSync(SETTINGS_PATH, 'utf-8');
@@ -303,7 +303,7 @@ const loadSettings = () => {
   return { ...DEFAULT_SETTINGS };
 };
 
-const saveSettings = (data) => {
+export const saveSettings = (data) => {
   try {
     const dir = path.resolve('./data');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
