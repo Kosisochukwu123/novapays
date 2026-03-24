@@ -269,7 +269,7 @@ export default function AdminUsers() {
         </div>
 
         {/* Table */}
-        <div style={{ backgroundColor: '#1e293b', borderRadius: 16, border: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: '#1e293b', borderRadius: 16, border: '1px solid rgba(255,255,255,0.06)', overflow: 'scroll' }}>
 
           {/* Table header */}
           <div style={{ display: 'grid', gridTemplateColumns: '2.5fr 2fr 1.2fr 1fr 1.8fr', gap: 12, padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
