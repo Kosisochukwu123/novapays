@@ -27,6 +27,7 @@ export default function AdminChats() {
   const bottomRef  = useRef(null);
   const inputRef   = useRef(null);
   const pollingRef = useRef(null);
+  const isMobile = innerWidth < 590
 
   // ── Fetch all chats ─────────────────────────────────────────────────
   const fetchChats = useCallback(async (silent = false) => {
@@ -141,7 +142,7 @@ export default function AdminChats() {
         </div>
 
         {/* Main layout */}
-        <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '300px 1fr', gap: 16, minHeight: 0 }}>
+        <div style={{ flex: 1, display: 'grid', gridTemplateColumns: isMobile ? "1fr" : '300px 1fr', gap: 16, minHeight: 0 }}>
 
           {/* ── Left: chat list ── */}
           <div style={{ backgroundColor: '#1e293b', borderRadius: 16, border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -373,6 +374,7 @@ export default function AdminChats() {
               </>
             )}
           </div>
+
         </div>
       </div>
 

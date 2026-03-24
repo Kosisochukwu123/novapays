@@ -2,35 +2,41 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { MessageCircle, X, Send, Minus, Loader } from 'lucide-react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
+import { useAppSettings } from '../../context/AppContext';
 
 const SENDER_CFG = {
-  user:  { align: 'flex-end',   bg: '#38bdf8',              color: '#0f172a', label: 'You'     },
-  bot:   { align: 'flex-start', bg: 'rgba(255,255,255,0.08)', color: '#f1f5f9', label: 'NovaPay' },
-  admin: { align: 'flex-start', bg: 'rgba(245,158,11,0.15)', color: '#f1f5f9', label: 'Support' },
+  user:  { align: 'flex-end',   bg: '#38bdf8',                color: '#0f172a', label: 'You'     },
+  bot:   { align: 'flex-start', bg: 'rgba(255,255,255,0.08)', color: '#f1f5f9', label: 'Support' },
+  admin: { align: 'flex-start', bg: 'rgba(245,158,11,0.15)',  color: '#f1f5f9', label: 'Support' },
 };
 
 const timeStr = (date) =>
   new Date(date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
 export default function ChatWidget() {
-  const { user } = useAuth();
-  const [open,        setOpen]        = useState(false);
-  const [minimised,   setMinimised]   = useState(false);
-  const [messages,    setMessages]    = useState([]);
-  const [chatId,      setChatId]      = useState(null);
-  const [input,       setInput]       = useState('');
-  const [sending,     setSending]     = useState(false);
-  const [loading,     setLoading]     = useState(false);
-  const [unread,      setUnread]      = useState(0);
-  const bottomRef     = useRef(null);
-  const inputRef      = useRef(null);
-  const pollingRef    = useRef(null);
+  const { user }     = useAuth();
+  const { settings } = useAppSettings();
 
-  // ── Load chat ────────────────────────────────────────────────────────
+  const platformName = settings.platformName || 'NovaPay';
+
+  const [open,      setOpen]      = useState(false);
+  const [minimised, setMinimised] = useState(false);
+  const [messages,  setMessages]  = useState([]);
+  const [chatId,    setChatId]    = useState(null);
+  const [input,     setInput]     = useState('');
+  const [sending,   setSending]   = useState(false);
+  const [loading,   setLoading]   = useState(false);
+  const [unread,    setUnread]    = useState(0);
+
+  const bottomRef  = useRef(null);
+  const inputRef   = useRef(null);
+  const pollingRef = useRef(null);
+
+  // ── Load chat ─────────────────────────────────────────────────────────
   const loadChat = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     try {
-      const res = await api.get('/user/chat');
+      const res  = await api.get('/user/chat');
       const chat = res.data.chat;
       setChatId(chat._id);
       setMessages(chat.messages || []);
@@ -45,9 +51,7 @@ export default function ChatWidget() {
     }
   }, []);
 
-  useEffect(() => {
-    if (user) loadChat();
-  }, [user, loadChat]);
+  useEffect(() => { if (user) loadChat(); }, [user, loadChat]);
 
   // Poll every 8 seconds for new admin messages
   useEffect(() => {
@@ -78,7 +82,7 @@ export default function ChatWidget() {
     }
   }, [open, minimised]);
 
-  // ── Send message ─────────────────────────────────────────────────────
+  // ── Send message ──────────────────────────────────────────────────────
   const sendMessage = async () => {
     if (!input.trim() || sending) return;
     const text = input.trim();
@@ -99,7 +103,6 @@ export default function ChatWidget() {
       const res = await api.post('/user/chat/message', { text });
       setMessages(res.data.chat.messages);
     } catch {
-      // Remove temp message on failure
       setMessages(prev => prev.filter(m => m._id !== tempMsg._id));
       setInput(text);
     } finally {
@@ -199,18 +202,49 @@ export default function ChatWidget() {
             flexShrink:      0,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              {/* Online indicator */}
+              {/* Avatar with online dot */}
               <div style={{ position: 'relative' }}>
-                <div style={{ width: 36, height: 36, borderRadius: '50%', backgroundColor: 'rgba(56,189,248,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <MessageCircle size={18} color="#38bdf8" />
-                </div>
-                <span style={{ position: 'absolute', bottom: 1, right: 1, width: 9, height: 9, borderRadius: '50%', backgroundColor: '#22c55e', border: '2px solid #0f172a' }} />
+                {settings.logoUrl ? (
+                  <img
+                    src={settings.logoUrl}
+                    alt={platformName}
+                    style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <div style={{
+                    width:           36,
+                    height:          36,
+                    borderRadius:    '50%',
+                    backgroundColor: 'rgba(56,189,248,0.15)',
+                    display:         'flex',
+                    alignItems:      'center',
+                    justifyContent:  'center',
+                  }}>
+                    <MessageCircle size={18} color="#38bdf8" />
+                  </div>
+                )}
+                {/* Online green dot */}
+                <span style={{
+                  position:        'absolute',
+                  bottom:          1,
+                  right:           1,
+                  width:           9,
+                  height:          9,
+                  borderRadius:    '50%',
+                  backgroundColor: '#22c55e',
+                  border:          '2px solid #0f172a',
+                }} />
               </div>
+
               <div>
-                <p style={{ color: '#fff', fontSize: 14, fontWeight: 700, margin: 0 }}>NovaPay Support</p>
+                {/* ── Dynamic platform name ── */}
+                <p style={{ color: '#fff', fontSize: 14, fontWeight: 700, margin: 0 }}>
+                  {platformName} Support
+                </p>
                 <p style={{ color: '#22c55e', fontSize: 11, margin: 0 }}>● Online</p>
               </div>
             </div>
+
             <div style={{ display: 'flex', gap: 4 }}>
               <button
                 onClick={() => setMinimised(m => !m)}
@@ -231,20 +265,25 @@ export default function ChatWidget() {
             </div>
           </div>
 
-          {/* Body — hidden when minimised */}
+          {/* Body */}
           {!minimised && (
             <>
               {/* Messages */}
               <div style={{ flex: 1, overflowY: 'auto', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
 
-                {/* Welcome message */}
+                {/* Welcome state */}
                 {messages.length === 0 && !loading && (
                   <div style={{ textAlign: 'center', padding: '20px 10px' }}>
                     <div style={{ width: 52, height: 52, borderRadius: '50%', backgroundColor: 'rgba(56,189,248,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
-                      <MessageCircle size={24} color="#38bdf8" />
+                      {settings.logoUrl ? (
+                        <img src={settings.logoUrl} alt={platformName} style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover' }} />
+                      ) : (
+                        <MessageCircle size={24} color="#38bdf8" />
+                      )}
                     </div>
+                    {/* ── Dynamic welcome heading ── */}
                     <p style={{ color: '#f1f5f9', fontSize: 14, fontWeight: 600, margin: '0 0 6px' }}>
-                      Welcome to NovaPay Support
+                      Welcome to {platformName} Support
                     </p>
                     <p style={{ color: '#64748b', fontSize: 12, lineHeight: 1.6, margin: 0 }}>
                       Send us a message and we'll get back to you right away.
@@ -252,16 +291,25 @@ export default function ChatWidget() {
                   </div>
                 )}
 
+                {/* Loading spinner */}
                 {loading && (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                     <Loader size={20} color="#38bdf8" style={{ animation: 'spin 1s linear infinite' }} />
                   </div>
                 )}
 
+                {/* Message bubbles */}
                 {!loading && messages.map((msg, i) => {
-                  const cfg     = SENDER_CFG[msg.sender] || SENDER_CFG.bot;
-                  const isUser  = msg.sender === 'user';
-                  const showLabel = i === 0 || messages[i-1]?.sender !== msg.sender;
+                  const cfg      = SENDER_CFG[msg.sender] || SENDER_CFG.bot;
+                  const isUser   = msg.sender === 'user';
+                  const showLabel = i === 0 || messages[i - 1]?.sender !== msg.sender;
+
+                  // Use dynamic platform name for bot/admin label
+                  const displayLabel = isUser
+                    ? 'You'
+                    : msg.sender === 'bot'
+                    ? platformName
+                    : `${platformName} Support`;
 
                   return (
                     <div
@@ -270,18 +318,18 @@ export default function ChatWidget() {
                     >
                       {showLabel && (
                         <p style={{ color: '#475569', fontSize: 10, margin: '0 0 4px', padding: '0 4px', fontWeight: 600 }}>
-                          {cfg.label}
+                          {displayLabel}
                         </p>
                       )}
                       <div style={{
-                        maxWidth:     '80%',
-                        padding:      '10px 14px',
-                        borderRadius: isUser ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                        maxWidth:        '80%',
+                        padding:         '10px 14px',
+                        borderRadius:    isUser ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                         backgroundColor: cfg.bg,
-                        color:        cfg.color,
-                        fontSize:     13,
-                        lineHeight:   1.55,
-                        wordBreak:    'break-word',
+                        color:           cfg.color,
+                        fontSize:        13,
+                        lineHeight:      1.55,
+                        wordBreak:       'break-word',
                       }}>
                         {msg.text}
                       </div>
@@ -296,17 +344,18 @@ export default function ChatWidget() {
                     </div>
                   );
                 })}
+
                 <div ref={bottomRef} />
               </div>
 
               {/* Input */}
               <div style={{
-                padding:      '12px 14px',
-                borderTop:    '1px solid rgba(255,255,255,0.06)',
-                display:      'flex',
-                gap:          8,
-                alignItems:   'flex-end',
-                flexShrink:   0,
+                padding:         '12px 14px',
+                borderTop:       '1px solid rgba(255,255,255,0.06)',
+                display:         'flex',
+                gap:             8,
+                alignItems:      'flex-end',
+                flexShrink:      0,
                 backgroundColor: '#0f172a',
               }}>
                 <textarea

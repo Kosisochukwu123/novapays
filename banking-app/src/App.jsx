@@ -28,6 +28,7 @@ const AdminFund = lazy(() => import("./pages/admin/AdminFund"));
 const AdminWithdrawals = lazy(() => import("./pages/admin/AdminWithdrawals"));
 import AdminTrades from "./pages/admin/AdminTrades";
 import AdminDeposits from "./pages/admin/AdminDeposits";
+import AdminChats from "./pages/admin/AdminChats";
 
 const Loader = () => (
   <div className="flex items-center justify-center h-screen bg-surface-50">
@@ -182,6 +183,14 @@ export default function App() {
             element={
               <AdminRoute>
                 <AdminDeposits />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/chats"
+            element={
+              <AdminRoute>
+                <AdminChats />
               </AdminRoute>
             }
           />
