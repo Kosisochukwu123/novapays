@@ -275,6 +275,8 @@ export default function ProfilePage() {
           </form>
         </div>
 
+         <KYCSection defaultOpen={false} />
+
         {/* ── Language selector ── */}
         <div style={card}>
           <p style={{ color: '#fff', fontWeight: 600, fontSize: 16, marginBottom: 4 }}>
@@ -321,7 +323,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <KYCSection defaultOpen={false} />
+       
 
         {/* ── Change password ── */}
         <div style={card}>

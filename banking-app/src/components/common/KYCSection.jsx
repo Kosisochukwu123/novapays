@@ -109,6 +109,8 @@ export default function KYCSection({ defaultOpen = false }) {
   const [error,       setError]       = useState('');
   const [formErrors,  setFormErrors]  = useState({});
 
+  const isMobile = window.innerWidth < 590
+
   const [form, setForm] = useState({
     idType:      '',
     idNumber:    '',
@@ -368,7 +370,7 @@ export default function KYCSection({ defaultOpen = false }) {
                 Document Uploads
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr', gap: 14 }}>
                 <ImageUpload
                   label="ID Front"
                   hint="Front side of your ID"
@@ -405,7 +407,7 @@ export default function KYCSection({ defaultOpen = false }) {
               <button
                 type="submit"
                 disabled={loading}
-                style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', backgroundColor: loading ? '#b45309' : '#f59e0b', color: '#0f172a', fontWeight: 700, fontSize: 15, fontFamily: "'DM Sans', sans-serif", opacity: loading ? 0.8 : 1, transition: 'all 0.2s' }}
+                style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', backgroundColor: loading ? '#b45309' : '#38bdf8', color: '#0f172a', fontWeight: 700, fontSize: 15, fontFamily: "'DM Sans', sans-serif", opacity: loading ? 0.8 : 1, transition: 'all 0.2s' }}
               >
                 {loading ? 'Submitting KYC...' : 'Submit KYC for Review'}
               </button>
