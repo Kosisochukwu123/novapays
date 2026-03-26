@@ -24,7 +24,18 @@ const userSchema = new mongoose.Schema(
     lastLogin: { type: Date },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date },
+
+    kycStatus: {
+      type: String,
+      enum: ["not_started", "pending", "verified", "rejected"],
+      default: "not_started",
+    },
+    kycVerified: { type: Boolean, default: false },
+    kycRejectionReason: { type: String, default: "" },
+    kycData: { type: Object, default: {} },
+    kycSubmittedAt: { type: Date },
   },
+
   { timestamps: true },
 );
 

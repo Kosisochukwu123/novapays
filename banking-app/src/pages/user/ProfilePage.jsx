@@ -4,6 +4,8 @@ import UserLayout from '../../components/layout/UserLayout';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
+import KYCSection from '../../components/common/KYCSection';
+
 
 const card = {
   backgroundColor: '#1e293b',
@@ -318,6 +320,8 @@ export default function ProfilePage() {
             })}
           </div>
         </div>
+
+        <KYCSection defaultOpen={false} />
 
         {/* ── Change password ── */}
         <div style={card}>

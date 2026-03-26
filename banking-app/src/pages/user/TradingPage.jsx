@@ -334,6 +334,7 @@ export default function TradingPage() {
               {t('trading.subtitle')}
             </p>
           </div>
+          
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             <div style={{ textAlign: 'right' }}>
               <p style={{ color: '#64748b', fontSize: 11 }}>{t('trading.availableBalance')}</p>

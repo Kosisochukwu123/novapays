@@ -24,6 +24,9 @@ import {
   userMarkRead,
 } from '../controllers/chatController.js';
 
+import { submitKYC } from '../controllers/userController.js';
+
+
 
 const router = express.Router();
 
@@ -53,6 +56,8 @@ router.get('/chat',         getUserChat);
 router.post('/chat/message', userSendMessage);
 router.put('/chat/read',     userMarkRead);
 
+
+router.post('/kyc', submitKYC);
 
 
 

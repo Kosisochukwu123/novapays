@@ -75,4 +75,21 @@ router.post('/chats/:id/message', adminSendMessage);
 router.put('/chats/:id/read',     adminMarkRead);
 router.put('/chats/:id/close',    adminCloseChat);
 
+// PUT /api/admin/users/:id/kyc
+router.put('/users/:id/kyc', async (req, res) => {
+  try {
+    const { status, rejectionReason } = req.body;
+    const update = {
+      kycStatus:    status,
+      kycVerified:  status === 'verified',
+      ...(rejectionReason && { kycRejectionReason: rejectionReason }),
+    };
+    const user = await User.findByIdAndUpdate(req.params.id, update, { new: true }).select('-password');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: `KYC ${status}`, user });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to update KYC' });
+  }
+});
+
 export default router;

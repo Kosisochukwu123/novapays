@@ -178,3 +178,22 @@ export const changePassword = async (req, res) => {
     res.status(500).json({ message: "Failed to change password" });
   }
 };
+
+
+// POST /api/user/kyc
+export const submitKYC = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        kycStatus:      'pending',
+        kycData:        req.body,
+        kycSubmittedAt: new Date(),
+      },
+      { new: true }
+    ).select('-password');
+    res.json({ message: 'KYC submitted successfully', user });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to submit KYC' });
+  }
+};
