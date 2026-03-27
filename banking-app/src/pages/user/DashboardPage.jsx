@@ -25,6 +25,7 @@ import {
 import UserLayout from "../../components/layout/UserLayout";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
+import "./Dashboard.css";
 
 const TX_CONFIG = {
   transfer: {
@@ -319,7 +320,7 @@ export default function DashboardPage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3,1fr)",
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)",
               gap: 16,
               marginBottom: 20,
             }}
@@ -456,7 +457,7 @@ export default function DashboardPage() {
             fontFamily: "'DM Sans', sans-serif",
           }}
         >
-          <div style={{ ...card, padding: 36 }}>
+          <div className="DashboardCard">
             <div style={{ fontSize: 40, marginBottom: 16 }}>⚠️</div>
             <p
               style={{
@@ -468,9 +469,11 @@ export default function DashboardPage() {
             >
               Failed to load dashboard
             </p>
+
             <p style={{ color: "#64748b", fontSize: 13, marginBottom: 24 }}>
               {error}
             </p>
+
             <button
               onClick={fetchDashboard}
               style={{
@@ -496,32 +499,17 @@ export default function DashboardPage() {
   // ── Main dashboard ─────────────────────────────────────────────────────
   return (
     <UserLayout>
-      <div style={{ fontFamily: "'DM Sans', sans-serif", color: "#f1f5f9" }}>
+      <div className="mainDashboard">
         {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            marginBottom: 28,
-          }}
-        >
+        <div className="header">
+
           <div>
-            <h1
-              style={{
-                fontSize: 28,
-                fontWeight: 700,
-                color: "#fff",
-                fontFamily: "'Playfair Display', serif",
-              }}
-            >
-              {greeting()},{" "}
-              <span style={{ color: "#38bdf8" }}>
-                {user?.fullName?.split(" ")[0]}
-              </span>{" "}
-              👋
+
+            <h1 className="H1">
+              {greeting()}, <span>{user?.fullName?.split(" ")[0]}</span> 👋
             </h1>
-            <p style={{ color: "#64748b", fontSize: 14, marginTop: 4 }}>
+
+            <p className="P1">
               {new Date().toLocaleDateString("en-US", {
                 weekday: "long",
                 year: "numeric",
@@ -530,16 +518,7 @@ export default function DashboardPage() {
               })}
             </p>
             {lastUpdated && (
-              <p
-                style={{
-                  color: "#334155",
-                  fontSize: 11,
-                  marginTop: 4,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4,
-                }}
-              >
+              <p className="P2">
                 <RefreshCw size={10} />
                 Updated
                 {lastUpdated.toLocaleTimeString("en-US", {
@@ -548,95 +527,56 @@ export default function DashboardPage() {
                 })}
               </p>
             )}
+
           </div>
 
-          <button
-            onClick={() => navigate("/transfer")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              backgroundColor: "#38bdf8",
-              color: "#0f172a",
-              fontWeight: 700,
-              fontSize: "10px",
-              padding: "10px 20px",
-              borderRadius: 12,
-              border: "none",
-              cursor: "pointer",
-              fontFamily: "'DM Sans', sans-serif",
-              marginTop: isMobile ? 16 : 0,
-            }}
-          >
+          <button onClick={() => navigate("/transfer")} >
             <Send size={15} /> {t("dashboard.sendMoney")}
           </button>
+
         </div>
 
         {/* Stat Cards */}
-        <div
-          style={{
-            display: "grid",
-
-            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-            gap: 16,
-            marginBottom: 20,
-          }}
-        >
+        <div className="mainDashboard-statCard">
           {stats.map((s) => {
             const Icon = s.icon;
+
             return (
+
               <div key={s.label} style={card}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: 14,
-                  }}
-                >
-                  <span style={{ color: "#94a3b8", fontSize: 13 }}>
-                    {s.label}
-                  </span>
-                  <div
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 10,
-                      backgroundColor: s.iconBg,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+
+                <div className="mainDashboard-statCard-top">
+
+                  <span>{s.label}</span>
+
+                  <div>
                     <Icon size={17} color={s.iconColor} />
                   </div>
+
                 </div>
-                <p style={{ fontSize: 26, fontWeight: 700, color: "#fff" }}>
+
+                <p className="mainDashboard-statCard-funds">
                   $
                   {s.value.toLocaleString("en-US", {
                     minimumFractionDigits: 2,
                   })}
                 </p>
-                <p style={{ fontSize: 12, marginTop: 6, color: s.subColor }}>
+
+                <p className="mainDashboard-statCard-label">
                   {s.sub}
                 </p>
+
               </div>
             );
           })}
         </div>
 
         {/* Charts Row */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "3fr 2fr",
-            gap: 16,
-            marginBottom: 16,
-          }}
-        >
+        <div className="mainDashboard-chartRow">
           {/* Balance Area Chart */}
           <div style={card}>
-            <p style={{ fontWeight: 600, color: "#fff", marginBottom: 16 }}>
+
+            <p>
               {t("dashboard.balanceOverview")}
             </p>
 
@@ -682,19 +622,10 @@ export default function DashboardPage() {
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div
-                style={{
-                  height: isMobile ? 180 : 200,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#334155",
-                  fontSize: 13,
-                  textAlign: "center",
-                  padding: isMobile ? "0 10px" : 0,
-                }}
-              >
+              <div className="mainDashboard-chartRow-noData">
+
                 {t("dashboard.noBalanceHistory")}
+
               </div>
             )}
           </div>
@@ -814,45 +745,26 @@ export default function DashboardPage() {
               </div>
             )}
           </div>
+
         </div>
 
         {/* Recent Transactions */}
         <div style={{ ...card, padding: 0 }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "16px 20px",
-              borderBottom: "1px solid rgba(255,255,255,0.05)",
-            }}
-          >
-            <p style={{ fontWeight: 600, color: "#fff" }}>
+
+          <div  className="mainDashboard-recentTransaction">
+
+            <p >
               {t("dashboard.recentTransactions")}
             </p>
-            <button
-              onClick={() => navigate("/history")}
-              style={{
-                background: "none",
-                border: "none",
-                color: "#38bdf8",
-                fontSize: 13,
-                cursor: "pointer",
-              }}
-            >
+
+            <button onClick={() => navigate("/history")}  >
               {t("dashboard.viewAll")}
             </button>
+
           </div>
 
           {recentTx.length === 0 ? (
-            <div
-              style={{
-                padding: "40px 20px",
-                textAlign: "center",
-                color: "#334155",
-                fontSize: 13,
-              }}
-            >
+            <div className="mainDashboard-recentTransaction-noData" >
               {t("dashboard.noTransactions")}
             </div>
           ) : (
@@ -930,6 +842,7 @@ export default function DashboardPage() {
                       </p>
                     </div>
                   </div>
+
                   <div style={{ textAlign: "right" }}>
                     <p
                       style={{
@@ -957,11 +870,13 @@ export default function DashboardPage() {
                       {tx.status}
                     </span>
                   </div>
+
                 </div>
               );
             })
           )}
         </div>
+
       </div>
     </UserLayout>
   );

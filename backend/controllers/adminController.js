@@ -330,3 +330,43 @@ export const updateSettings = async (req, res) => {
     res.status(500).json({ message: 'Failed to update settings' });
   }
 };
+
+// PUT /api/admin/users/:id/kyc
+export const updateUserKYC = async (req, res) => {
+  try {
+    const { status, rejectionReason } = req.body;
+
+    const validStatuses = ['verified', 'rejected', 'pending'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid KYC status' });
+    }
+
+    const update = {
+      kycStatus:   status,
+      kycVerified: status === 'verified',
+    };
+
+    if (status === 'rejected' && rejectionReason) {
+      update.kycRejectionReason = rejectionReason;
+    }
+
+    if (status === 'verified') {
+      update.kycRejectionReason = '';
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      update,
+      { new: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: `KYC ${status} successfully`, user });
+  } catch (err) {
+    console.error('updateUserKYC error:', err);
+    res.status(500).json({ message: 'Failed to update KYC status' });
+  }
+};

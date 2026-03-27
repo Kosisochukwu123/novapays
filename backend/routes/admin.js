@@ -11,6 +11,7 @@ import {
   updateTransaction,
   getSettings,
   updateSettings,
+    updateUserKYC,  
 } from '../controllers/adminController.js';
 
 import {
@@ -43,6 +44,9 @@ import {
   adminCloseChat,
 } from '../controllers/chatController.js';
 
+
+
+
 const router = express.Router();
 
 router.use(protect, adminOnly);
@@ -74,6 +78,9 @@ router.get('/chats/:id',          adminGetChat);
 router.post('/chats/:id/message', adminSendMessage);
 router.put('/chats/:id/read',     adminMarkRead);
 router.put('/chats/:id/close',    adminCloseChat);
+
+router.put('/users/:id/kyc', updateUserKYC);
+
 
 // PUT /api/admin/users/:id/kyc
 router.put('/users/:id/kyc', async (req, res) => {
