@@ -225,6 +225,7 @@ export default function UserLayout({ children }) {
         </button>
 
       </div>
+
     </div>
   );
 
@@ -341,23 +342,6 @@ export default function UserLayout({ children }) {
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
 
             <NotificationBell />
-
-            <div
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: "50%",
-                backgroundColor: "#38bdf8",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#0f172a",
-                fontSize: 12,
-                fontWeight: 700,
-              }}
-            >
-              {initials}
-            </div>
 
           </div>
 
