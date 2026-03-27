@@ -100,8 +100,11 @@ export default function DashboardPage() {
   const [recentTx,       setRecentTx]       = useState([]);
   const [allTx,          setAllTx]          = useState([]);
   const [chartData,      setChartData]      = useState([]);
-  const [period,         setPeriod]         = useState('1W');
-  const [balanceVisible, setBalanceVisible] = useState(true);
+  const [period,         setPeriod]         = useState('1W'); 
+  const [balanceVisible, setBalanceVisible] = useState(() => {
+  const saved = localStorage.getItem("balanceVisible");
+  return saved === null ? true : JSON.parse(saved);
+  });
   const [lastUpdated,    setLastUpdated]    = useState(null);
 
   const uid = user?._id || user?.id;
@@ -144,6 +147,11 @@ export default function DashboardPage() {
     const iv = setInterval(() => fetchDashboard(), 60000);
     return () => clearInterval(iv);
   }, [fetchDashboard]);
+
+  // handles saving balance visibility preference to localStorage
+  useEffect(() => {
+  localStorage.setItem("balanceVisible", JSON.stringify(balanceVisible));
+}, [balanceVisible]);
 
   const greeting = () => {
     const h = new Date().getHours();
@@ -356,7 +364,7 @@ export default function DashboardPage() {
 
           {/* Filter tabs */}
           <div style={{ display: 'flex', gap: 0, padding: '12px 20px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-            {['All', 'Incomes', 'Expenses'].map((tab, idx) => {
+            {['All'].map((tab, idx) => {
               const isActive = idx === 0;
               return (
                 <button key={tab}
