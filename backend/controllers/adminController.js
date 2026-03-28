@@ -210,20 +210,20 @@ export const getTransactions = async (req, res) => {
 };
 
 // GET /api/admin/settings
-let platformSettings = {
-  platformName:        'NovaPay',
-  defaultCurrency:     'USD',
-  transferLimit:       10000,
-  maxTransferPerDay:   50000,
-  minBalance:          10,
-  requireApproval:     true,
-  twoFactorAdmin:      true,
-  emailNotifications:  true,
-  smsNotifications:    false,
-  maintenanceMode:     false,
-  allowRegistration:   true,
-  supportEmail:        'support@novapay.com',
-};
+// let platformSettings = {
+//   platformName:        'NovaPay',
+//   defaultCurrency:     'USD',
+//   transferLimit:       10000,
+//   maxTransferPerDay:   50000,
+//   minBalance:          10,
+//   requireApproval:     true,
+//   twoFactorAdmin:      true,
+//   emailNotifications:  true,
+//   smsNotifications:    false,
+//   maintenanceMode:     false,
+//   allowRegistration:   true,
+//   supportEmail:        'support@novapay.com',
+// };
 
 // export const getSettings = async (req, res) => {
 //   res.json(platformSettings);
@@ -293,43 +293,54 @@ const DEFAULT_SETTINGS = {
   supportEmail:       'support@novapay.com',
 };
 
-export const loadSettings = () => {
+export const loadSettings = async () => {
   try {
-    if (fs.existsSync(SETTINGS_PATH)) {
-      const raw = fs.readFileSync(SETTINGS_PATH, 'utf-8');
-      return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
-    }
-  } catch { /* use defaults */ }
-  return { ...DEFAULT_SETTINGS };
+    const doc = await Settings.findOne({ key: 'global' });
+    return doc ? { ...DEFAULT_SETTINGS, ...doc.data } : DEFAULT_SETTINGS;
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
 };
 
 export const saveSettings = (data) => {
   try {
     const dir = path.resolve('./data');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(SETTINGS_PATH, JSON.stringify(data, null, 2));
+    fs.writeFileSync(SETTINGS_PATH, JSON.stringify(data, null, 2), 'utf-8');
+    return true;
   } catch (err) {
-    console.error('Failed to save settings:', err);
+    console.error('saveSettings error:', err);
+    return false;
   }
 };
 
 // GET /api/admin/settings
 export const getSettings = async (req, res) => {
-  res.json(loadSettings());
+  try {
+    const doc = await Settings.findOne({ key: 'global' });
+    const data = doc ? { ...DEFAULT_SETTINGS, ...doc.data } : DEFAULT_SETTINGS;
+    res.json(data);
+  } catch (err) {
+    console.error('getSettings error:', err);
+    res.json(DEFAULT_SETTINGS);
+  }
 };
 
 // PUT /api/admin/settings
 export const updateSettings = async (req, res) => {
   try {
-    const current  = loadSettings();
-    const updated  = { ...current, ...req.body };
-    saveSettings(updated);
-    res.json({ message: 'Settings updated successfully', ...updated });
+    const updated = await Settings.findOneAndUpdate(
+      { key: 'global' },
+      { $set: { data: { ...DEFAULT_SETTINGS, ...req.body } } },
+      { new: true, upsert: true }
+    );
+    res.json({ message: 'Settings updated successfully', ...updated.data });
   } catch (err) {
     console.error('updateSettings error:', err);
     res.status(500).json({ message: 'Failed to update settings' });
   }
 };
+
 
 // PUT /api/admin/users/:id/kyc
 export const updateUserKYC = async (req, res) => {

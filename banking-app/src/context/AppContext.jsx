@@ -1,77 +1,89 @@
-import { createContext, useContext, useState, useEffect, useRef } from "react";
-import api from "../services/api";
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
+import api from '../services/api';
 
 const AppContext = createContext(null);
 
 const DEFAULT_SETTINGS = {
-  platformName: "NovaPay",
-  logoUrl: "",
-  logoText: "NP",
-  defaultCurrency: "USD",
-  transferLimit: "10000",
-  minBalance: "10",
-  requireApproval: true,
-  twoFactorAdmin: true,
+  platformName:       'NovaPay',
+  logoUrl:            '',
+  logoText:           'NP',
+  defaultCurrency:    'USD',
+  transferLimit:      '10000',
+  minBalance:         '10',
+  requireApproval:    true,
+  twoFactorAdmin:     true,
   emailNotifications: true,
-  smsNotifications: false,
-  maintenanceMode: false,
-  allowRegistration: true,
-  maxTransferPerDay: "50000",
-  supportEmail: "support@novapay.com",
+  smsNotifications:   false,
+  maintenanceMode:    false,
+  allowRegistration:  true,
+  maxTransferPerDay:  '50000',
+  supportEmail:       'support@novapay.com',
 };
 
-const STORAGE_KEY = "platform_settings";
+const STORAGE_KEY = 'platform_settings';
 
 const loadCached = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw
-      ? { ...DEFAULT_SETTINGS, ...JSON.parse(raw) }
-      : { ...DEFAULT_SETTINGS };
-  } catch {
-    return { ...DEFAULT_SETTINGS };
-  }
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return { ...DEFAULT_SETTINGS, ...parsed };
+    }
+  } catch { /* ignore */ }
+  return { ...DEFAULT_SETTINGS };
+};
+
+const saveToStorage = (data) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch { /* ignore */ }
 };
 
 export const AppProvider = ({ children }) => {
-  const [settings, setSettings] = useState(loadCached);
-  const [settingsLoading, setSettingsLoading] = useState(true);
-  const fetchedRef = useRef(false); // prevent duplicate fetches
+  const [settings,        setSettings]        = useState(loadCached);
+  const [settingsLoading, setSettingsLoading] = useState(false);
+  const fetchedRef = useRef(false);
 
   useEffect(() => {
-    // Only fetch once per app session
+    // Only fetch once per session
     if (fetchedRef.current) return;
     fetchedRef.current = true;
 
-    // src/context/AppContext.jsx — update just the fetchSettings function
     const fetchSettings = async () => {
+      setSettingsLoading(true);
       try {
-        const baseURL =
-          import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-        const res = await fetch(`${baseURL}/settings`);
-        if (!res.ok) throw new Error("Failed");
-        const data = await res.json();
-        const merged = { ...DEFAULT_SETTINGS, ...data };
-        setSettings(merged);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-      } catch (err) {
-        console.warn("Could not fetch platform settings, using defaults");
+        const res  = await api.get('/settings');
+        const data = res.data;
+
+        // Only update if backend has actual data
+        // Don't let an empty/default backend response wipe saved settings
+        const hasRealData = data && (
+          data.platformName ||
+          data.logoUrl      ||
+          data.logoText
+        );
+
+        if (hasRealData) {
+          const merged = { ...DEFAULT_SETTINGS, ...data };
+          setSettings(merged);
+          saveToStorage(merged);
+        }
+        // If backend returned empty/defaults, keep what's in localStorage
+      } catch {
+        // Network error — keep using cached settings, don't wipe them
+        console.warn('Could not fetch platform settings, using cached');
       } finally {
         setSettingsLoading(false);
       }
     };
-    
+
     fetchSettings();
-  }, []); // empty deps — run once only
+  }, []);
 
   const updateSettings = (newSettings) => {
     const merged = { ...settings, ...newSettings };
     setSettings(merged);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-    } catch {
-      /* ignore storage errors */
-    }
+    saveToStorage(merged);
   };
 
   return (
