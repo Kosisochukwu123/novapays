@@ -182,9 +182,6 @@ export default function KYCSection({ defaultOpen = false }) {
             <p style={{ color: '#fff', fontSize: 15, fontWeight: 600, margin: 0 }}>
               KYC Verification
             </p>
-            <p style={{ color: '#64748b', fontSize: 12, margin: '3px 0 0' }}>
-              Required to enable withdrawals
-            </p>
           </div>
         </div>
 

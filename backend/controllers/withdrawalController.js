@@ -7,66 +7,61 @@ export const submitWithdrawal = async (req, res) => {
   try {
     const {
       fullName,
-      accountNumber,
       bankName,
+      accountNumber,
       amount,
-      reason,
-      proofImage1,
-      proofImage2,
+      // These are now optional — KYC is handled separately
+      reason = "",
+      additionalNotes = "",
+      proofImage1 = "",
+      proofImage2 = "",
     } = req.body;
 
-    if (
-      !fullName ||
-      !accountNumber ||
-      !bankName ||
-      !amount ||
-      !reason ||
-      !proofImage1
-    ) {
+    // Validate required fields only
+    if (!fullName?.trim()) {
       return res
         .status(400)
-        .json({ message: "All required fields must be filled" });
+        .json({ message: "Account holder name is required" });
+    }
+    if (!bankName?.trim()) {
+      return res.status(400).json({ message: "Bank name is required" });
+    }
+    if (!accountNumber?.trim()) {
+      return res.status(400).json({ message: "Account number is required" });
+    }
+    if (!amount || parseFloat(amount) <= 0) {
+      return res.status(400).json({ message: "A valid amount is required" });
     }
 
-    if (parseFloat(amount) <= 0) {
-      return res
-        .status(400)
-        .json({ message: "Amount must be greater than zero" });
-    }
-
+    // Check user has enough balance
     const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     if (user.balance < parseFloat(amount)) {
-      return res
-        .status(400)
-        .json({ message: "Insufficient balance for this withdrawal" });
+      return res.status(400).json({
+        message: `Insufficient balance. You have $${user.balance.toFixed(2)} available.`,
+      });
     }
 
     const withdrawal = await Withdrawal.create({
       user: req.user._id,
-      fullName,
-      accountNumber,
-      bankName,
+      fullName: fullName.trim(),
+      bankName: bankName.trim(),
+      accountNumber: accountNumber.trim(),
       amount: parseFloat(amount),
       reason,
+      additionalNotes,
       proofImage1,
-      proofImage2: proofImage2 || "",
+      proofImage2,
     });
 
-    await createNotification(req.user._id, {
-      title: "Withdrawal Submitted",
-      message: `Your withdrawal request of $${amount} is under review`,
-      type: "withdrawal",
-      link: "/withdrawal",
+    res.status(201).json({
+      message: "Withdrawal request submitted successfully",
+      withdrawal,
     });
-
-    res
-      .status(201)
-      .json({
-        message: "Withdrawal request submitted successfully",
-        withdrawal,
-      });
   } catch (err) {
-    console.error(err);
+    console.error("submitWithdrawal error:", err);
     res.status(500).json({ message: "Failed to submit withdrawal request" });
   }
 };
