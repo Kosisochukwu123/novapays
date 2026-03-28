@@ -26,7 +26,7 @@ export const register = async (req, res) => {
       status: "pending", // requires admin approval by default
     });
 
-    const settings = loadSettings();
+    const settings = await loadSettings();
     const platformName = settings.platformName || "NovaPay";
 
     // Send welcome email (don't await — don't block registration if it fails)
@@ -107,7 +107,7 @@ export const forgotPassword = async (req, res) => {
     const resetUrl = `${clientUrl}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
 
     // Get platform name from settings
-    const settings = loadSettings();
+    const settings = await loadSettings();
     const platformName = settings.platformName || "NovaPay";
 
     await sendEmail({
