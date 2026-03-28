@@ -302,7 +302,7 @@ export const loadSettings = async () => {
   }
 };
 
-export const saveSettings = (data) => {
+const saveSettings = (data) => {
   try {
     const dir = path.resolve('./data');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
