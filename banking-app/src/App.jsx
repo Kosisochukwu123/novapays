@@ -20,6 +20,8 @@ import InvestmentPage from "./pages/user/InvestmentPage";
 import DepositPage from "./pages/user/DepositPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import AirdropClaimPage from './pages/auth/AirdropClaimPage';
+
 
 // Admin pages
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
@@ -50,6 +52,8 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/airdrop" element={<AirdropClaimPage />} />
+
 
           {/* User (protected) */}
           <Route
