@@ -210,7 +210,7 @@ export default function AirdropClaimPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32, textAlign: 'left' }}>
           {[
             { step: '1', text: 'Create your free account',           color: '#38bdf8' },
-            { step: '2', text: `$${reward} is credited`,   color: '#22c55e' },
+            { step: '2', text: 'Get gift after email verification',   color: '#22c55e' },
             { step: '3', text: 'Start trading, saving & investing',  color: '#f59e0b' },
           ].map(item => (
             <div key={item.step} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
@@ -259,11 +259,7 @@ export default function AirdropClaimPage() {
             Sign in
           </Link>
         </p>
-
-        {/* Fine print */}
-        <p style={{ color: '#334155', fontSize: 11, marginTop: 20, lineHeight: 1.6 }}>
-          Reward is credited to your account after email verification. Terms apply.
-        </p>
+        
       </div>
 
       {/* Platform name footer */}
