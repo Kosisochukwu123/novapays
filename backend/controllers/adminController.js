@@ -2,6 +2,8 @@ import User from '../models/User.js';
 import Transaction from '../models/Transaction.js';
 import fs from 'fs';
 import path from 'path';
+import Settings from '../models/Settings.js';
+
 
 // GET /api/admin/dashboard
 export const getDashboard = async (req, res) => {
