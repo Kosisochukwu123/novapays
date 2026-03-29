@@ -166,7 +166,7 @@ export default function AirdropClaimPage() {
         {/* Headline */}
         <h1 style={{
           color:      '#fff',
-          fontSize:   28,
+          fontSize:   20,
           fontWeight: 800,
           fontFamily: "'Playfair Display', serif",
           margin:     '0 0 8px',
@@ -210,7 +210,7 @@ export default function AirdropClaimPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32, textAlign: 'left' }}>
           {[
             { step: '1', text: 'Create your free account',           color: '#38bdf8' },
-            { step: '2', text: `$${reward} is credited instantly`,   color: '#22c55e' },
+            { step: '2', text: `$${reward} is credited`,   color: '#22c55e' },
             { step: '3', text: 'Start trading, saving & investing',  color: '#f59e0b' },
           ].map(item => (
             <div key={item.step} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
@@ -246,7 +246,7 @@ export default function AirdropClaimPage() {
           onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
           onMouseLeave={e => { e.currentTarget.style.opacity = '1';   e.currentTarget.style.transform = 'translateY(0)'; }}
         >
-          Claim My ${reward} — Create Account
+          Claim ${reward} — Create Account
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
           </svg>
