@@ -192,8 +192,8 @@ export default function AirdropClaimPage() {
           </p>
           <p style={{
             color:      '#fff',
-            fontSize:   52,
-            fontWeight: 800,
+            fontSize:   32,
+            fontWeight: 500,
             fontFamily: "'Playfair Display', serif",
             margin:     '0 0 4px',
             lineHeight: 1,
@@ -268,7 +268,7 @@ export default function AirdropClaimPage() {
 
       {/* Platform name footer */}
       <p style={{ color: '#334155', fontSize: 12, marginTop: 24, position: 'relative' }}>
-        © {new Date().getFullYear()} {platformName} · Secure Banking
+        © {new Date().getFullYear()} {platformName} · First AI Decentralized Wallet
       </p>
 
       <style>{`
