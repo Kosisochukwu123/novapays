@@ -149,7 +149,7 @@ export default function SplashScreen({ onComplete }) {
             fontWeight: 500,
             animation:  'fadeIn 0.8s ease 0.5s both',
           }}>
-            Secure Banking
+            First AI digitalized wallet
           </p>
         </div>
       </div>

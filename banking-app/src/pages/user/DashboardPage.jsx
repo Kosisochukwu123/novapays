@@ -403,7 +403,9 @@ export default function DashboardPage() {
               >
                 <RefreshCw size={14} />
               </button>
+
               <div
+                onClick={() => navigate("/profile")}
                 style={{
                   width: 38,
                   height: 38,
