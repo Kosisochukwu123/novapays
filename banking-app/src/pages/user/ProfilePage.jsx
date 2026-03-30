@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Mail, Phone, Lock, Save, CheckCircle2, Eye, EyeOff, DollarSign } from 'lucide-react';
+import { User, Mail, Phone, Lock, Save, CheckCircle2, Eye, EyeOff, DollarSign, XCircle } from 'lucide-react';
 import UserLayout from '../../components/layout/UserLayout';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
