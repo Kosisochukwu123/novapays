@@ -15,12 +15,12 @@ const History = lazy(() => import("./pages/user/HistoryPage"));
 const Profile = lazy(() => import("./pages/user/ProfilePage"));
 const WithdrawalPage = lazy(() => import("./pages/user/WithdrawalPage"));
 const TradingPage = lazy(() => import("./pages/user/TradingPage"));
-import LoansPage from "./pages/user/LoansPage";
-import InvestmentPage from "./pages/user/InvestmentPage";
-import DepositPage from "./pages/user/DepositPage";
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
-import AirdropClaimPage from './pages/auth/AirdropClaimPage';
+const LoansPage = lazy(() => import("./pages/user/LoansPage"));
+const InvestmentPage = lazy(() => import("./pages/user/InvestmentPage"));
+const DepositPage = lazy(() => import("./pages/user/DepositPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"));
+const AirdropClaimPage = lazy(() => import("./pages/auth/AirdropClaimPage"));
 
 
 // Admin pages
@@ -30,9 +30,9 @@ const AdminTransactions = lazy(() => import("./pages/admin/AdminTransactions"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 const AdminFund = lazy(() => import("./pages/admin/AdminFund"));
 const AdminWithdrawals = lazy(() => import("./pages/admin/AdminWithdrawals"));
-import AdminTrades from "./pages/admin/AdminTrades";
-import AdminDeposits from "./pages/admin/AdminDeposits";
-import AdminChats from "./pages/admin/AdminChats";
+const AdminTrades = lazy(() => import("./pages/admin/AdminTrades"));
+const AdminDeposits = lazy(() => import("./pages/admin/AdminDeposits"));
+const AdminChats = lazy(() => import("./pages/admin/AdminChats"));
 
 const Loader = () => (
   <div className="flex items-center justify-center h-screen bg-surface-50">

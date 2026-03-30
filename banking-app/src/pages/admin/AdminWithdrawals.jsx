@@ -12,7 +12,7 @@ const card = {
   backgroundColor: '#1e293b',
   borderRadius:    16,
   border:          '1px solid rgba(255,255,255,0.06)',
-  overflow:        'hidden',
+  overflow:        'scroll',
 };
 
 const modalCard = {
@@ -350,6 +350,7 @@ export default function AdminWithdrawals() {
                       onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.02)'}
                       onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
+
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ width: 34, height: 34, borderRadius: '50%', backgroundColor: 'rgba(56,189,248,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                           <span style={{ color: '#38bdf8', fontSize: 11, fontWeight: 700 }}>
@@ -382,6 +383,7 @@ export default function AdminWithdrawals() {
                           <Eye size={12} /> Review
                         </button>
                       </div>
+
                     </div>
                   );
                 })
