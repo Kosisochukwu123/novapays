@@ -48,29 +48,63 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password)
-      return res.status(400).json({ message: "Email and password required" });
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ message: "Invalid credentials" });
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
+    }
 
-    const match = await user.matchPassword(password);
-    if (!match) return res.status(401).json({ message: "Invalid credentials" });
+    // Find user — make sure password field is selected (it's excluded by default)
+    const user = await User.findOne({
+      email: email.toLowerCase().trim(),
+    }).select("+password");
 
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    // Check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    // Check account status
     if (user.status === "suspended") {
       return res
         .status(403)
-        .json({ message: "Your account has been suspended. Contact support." });
+        .json({
+          message: "Your account has been suspended. Please contact support.",
+        });
     }
 
-    user.lastLogin = new Date();
-    await user.save();
+    if (user.status === "pending") {
+      return res
+        .status(403)
+        .json({
+          message:
+            "Your account is pending approval. Please wait for admin review.",
+        });
+    }
 
-    const token = generateToken(user._id, user.role);
-    res.json({ token, user });
+    // Generate token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN || "7d",
+    });
+
+    // Update last login
+    user.lastLogin = new Date();
+    await user.save({ validateBeforeSave: false });
+
+    // Return user without password
+    const userObj = user.toObject();
+    delete userObj.password;
+
+    res.json({ token, user: userObj });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error during login" });
+    console.error("login error:", err);
+    res.status(500).json({ message: "Login failed. Please try again." });
   }
 };
 
