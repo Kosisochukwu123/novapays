@@ -99,4 +99,18 @@ router.put('/users/:id/kyc', async (req, res) => {
   }
 });
 
+// Emergency fix — reset a user's account status to active
+router.put('/users/:id/activate', protect, adminOnly, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { $set: { status: 'active' } },
+      { new: true }
+    ).select('-password');
+    res.json({ message: 'User activated', user });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to activate user' });
+  }
+});
+
 export default router;

@@ -354,22 +354,24 @@ export const updateUserKYC = async (req, res) => {
       return res.status(400).json({ message: 'Invalid KYC status' });
     }
 
+    // Build update — only KYC fields, NEVER touch user.status
     const update = {
       kycStatus:   status,
       kycVerified: status === 'verified',
     };
 
-    if (status === 'rejected' && rejectionReason) {
-      update.kycRejectionReason = rejectionReason;
+    if (status === 'rejected') {
+      update.kycRejectionReason = rejectionReason || 'Please resubmit with clearer documents';
     }
 
     if (status === 'verified') {
       update.kycRejectionReason = '';
     }
 
+    // Use $set explicitly so no other fields are touched
     const user = await User.findByIdAndUpdate(
       req.params.id,
-      update,
+      { $set: update },      // ← $set ensures ONLY these fields change
       { new: true }
     ).select('-password');
 

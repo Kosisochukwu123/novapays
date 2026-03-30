@@ -534,6 +534,7 @@ export default function AdminWithdrawals() {
             <p style={{ fontSize: 11, fontWeight: 600, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 12 }}>
               Personal Information
             </p>
+            
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 18 }}>
               {[
                 { label: 'Full Name',    value: selectedK.kycData?.fullName    || selectedK.fullName },
