@@ -166,7 +166,7 @@ export default function KYCSection({ defaultOpen = false }) {
       borderRadius:    16,
       border:          `1px solid ${kycStatus === 'verified' ? 'rgba(34,197,94,0.2)' : kycStatus === 'pending' ? 'rgba(245,158,11,0.2)' : 'rgba(255,255,255,0.06)'}`,
       marginBottom:    16,
-      overflow:        'hidden',
+      overflow:        'scroll',
     }}>
 
       {/* Header row — always visible */}

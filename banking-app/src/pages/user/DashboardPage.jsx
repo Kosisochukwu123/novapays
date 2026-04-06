@@ -26,6 +26,7 @@ import {
 import UserLayout from "../../components/layout/UserLayout";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
+import UserAvatar from "../../components/common/UserAvatar";
 
 // ── Chart tooltip ─────────────────────────────────────────────────────────
 const ChartTooltip = ({ active, payload, label }) => {
@@ -364,7 +365,7 @@ export default function DashboardPage() {
           >
             <div style={{ textAlign: "left" }}>
               <p style={{ color: "#64748b", fontSize: 12, margin: 0 }}>
-                Welcome
+                 Welcome 
               </p>
               <p
                 style={{
@@ -404,28 +405,12 @@ export default function DashboardPage() {
                 <RefreshCw size={14} />
               </button>
 
-              <div
+              <UserAvatar
+                size={38}
                 onClick={() => navigate("/profile")}
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: "50%",
-                  backgroundColor: "#38bdf8",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#0f172a",
-                  fontSize: 13,
-                  fontWeight: 700,
-                }}
-              >
-                {user?.fullName
-                  ?.split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase() || "U"}
-              </div>
+                showBorder
+                style={{ cursor: "pointer" }}
+              />
             </div>
           </div>
 

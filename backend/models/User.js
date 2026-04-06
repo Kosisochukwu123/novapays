@@ -34,6 +34,8 @@ const userSchema = new mongoose.Schema(
     kycRejectionReason: { type: String, default: "" },
     kycData: { type: Object, default: {} },
     kycSubmittedAt: { type: Date },
+    
+    profileImage: { type: String, default: '' },
   },
 
   { timestamps: true },

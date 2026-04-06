@@ -198,3 +198,26 @@ export const submitKYC = async (req, res) => {
   }
 };
 
+export const updateProfile = async (req, res) => {
+  try {
+    const { fullName, email, phone, profileImage } = req.body;
+
+    const update = {};
+    if (fullName)      update.fullName      = fullName.trim();
+    if (email)         update.email         = email.toLowerCase().trim();
+    if (phone)         update.phone         = phone.trim();
+    if (profileImage !== undefined) update.profileImage = profileImage; // allow empty string to clear
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      update,
+      { new: true }
+    ).select('-password');
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ user });
+  } catch (err) {
+    console.error('updateProfile error:', err);
+    res.status(500).json({ message: 'Failed to update profile' });
+  }
+};
